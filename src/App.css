@@ -64,6 +64,33 @@
   gap: 16px;
 }
 
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(61, 64, 91, 0.1);
+}
+
+.user-badge__avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.user-badge__name {
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .footer {
   padding: 24px 40px;
   border-top: 1px solid var(--stroke);
@@ -163,6 +190,50 @@
 .dashboard {
   display: grid;
   gap: 16px;
+}
+
+.dashboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashboard-card {
+  border: 1px solid var(--stroke);
+  border-radius: 16px;
+  padding: 20px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(233, 240, 239, 0.6));
+  display: grid;
+  gap: 12px;
+}
+
+.dashboard-card--wide {
+  grid-column: 1 / -1;
+}
+
+.dashboard-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.savings-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.savings-metrics strong {
+  font-size: 1.1rem;
+  color: var(--ink);
 }
 
 .summary-cards {
@@ -545,6 +616,42 @@
   }
 }
 
+.auth {
+  display: grid;
+  gap: 16px;
+}
+
+.auth h3 {
+  margin-bottom: 0;
+}
+
+.auth-info {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(233, 240, 239, 0.4);
+  display: grid;
+  gap: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.form__success {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(61, 64, 91, 0.1);
+  color: var(--accent-2);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 960px) {
   .app__body {
     grid-template-columns: 1fr;
@@ -557,6 +664,10 @@
 
   .grid-2,
   .quick-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid {
     grid-template-columns: 1fr;
   }
 

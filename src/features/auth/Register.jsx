@@ -1,8 +1,106 @@
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
+import Button from "../../components/common/Button.jsx";
+import Input from "../../components/common/Input.jsx";
+
 export default function Register() {
+  const { register, isAuthenticated, user } = useAuth();
+  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!form.name || !form.email || !form.password) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    const result = register(form.name, form.email, form.password);
+    if (result.success) {
+      setSuccess("Registration successful!");
+      setForm({ name: "", email: "", password: "", confirmPassword: "" });
+    } else {
+      setError(result.error);
+    }
+  };
+
+  if (isAuthenticated) {
+    return (
+      <section className="auth auth--register">
+        <h3>Account created!</h3>
+        <p className="muted">Welcome, {user.name}!</p>
+        <div className="auth-info">
+          <p>Your account has been successfully created and you're now logged in.</p>
+          <div className="info-row">
+            <span>Account ID:</span>
+            <strong>#{user.id}</strong>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="auth auth--register">
-      <h1>Register</h1>
-      <p>Register form placeholder.</p>
+      <h3>Register</h3>
+      <p className="muted">Create your account</p>
+      <form className="form" onSubmit={handleSubmit}>
+        <Input
+          label="Full name"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="Ram Sharma"
+        />
+        <Input
+          label="Email"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+        />
+        <Input
+          label="Password"
+          name="password"
+          type="password"
+          value={form.password}
+          onChange={handleChange}
+          placeholder="••••••"
+        />
+        <Input
+          label="Confirm password"
+          name="confirmPassword"
+          type="password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          placeholder="••••••"
+        />
+        {error && <p className="form__error">{error}</p>}
+        {success && <p className="form__success">{success}</p>}
+        <Button className="btn--primary" type="submit">
+          Register
+        </Button>
+      </form>
     </section>
   );
 }

@@ -4,16 +4,12 @@ import Button from "./components/common/Button.jsx";
 import Input from "./components/common/Input.jsx";
 import Loader from "./components/common/Loader.jsx";
 import Modal from "./components/common/Modal.jsx";
-import ExpenseChart from "./components/charts/ExpenseChart.jsx";
-import IncomeChart from "./components/charts/IncomeChart.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import Navbar from "./components/layout/Navbar.jsx";
 import Sidebar from "./components/layout/Sidebar.jsx";
 import BudgetForm from "./features/budgets/BudgetForm.jsx";
 import BudgetList from "./features/budgets/BudgetList.jsx";
 import Dashboard from "./features/dashboard/Dashboard.jsx";
-import RecentTransactions from "./features/dashboard/RecentTransactions.jsx";
-import SummaryCards from "./features/dashboard/SummaryCards.jsx";
 import ReportsPanel from "./features/reports/ReportsPanel.jsx";
 import SettingsPanel from "./features/settings/SettingsPanel.jsx";
 import TransactionForm from "./features/transactions/TransactionForm.jsx";
@@ -52,27 +48,8 @@ function App() {
               </div>
             </section>
 
-            <section id="overview" className="panel">
+            <section id="overview" className="panel reveal">
               <Dashboard />
-            </section>
-
-            <section className="panel reveal" id="summary">
-              <header className="panel__header">
-                <h2>Summary</h2>
-                <span className="panel__tag">This month</span>
-              </header>
-              <SummaryCards />
-            </section>
-
-            <section className="panel grid-2 reveal">
-              <div>
-                <h3>Expense trends</h3>
-                <ExpenseChart />
-              </div>
-              <div>
-                <h3>Income flow</h3>
-                <IncomeChart />
-              </div>
             </section>
 
             <section className="panel grid-2 reveal">
@@ -89,7 +66,6 @@ function App() {
               </div>
               <div>
                 <TransactionList />
-                <RecentTransactions />
               </div>
             </section>
 
