@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useCallback, useContext, useMemo } from "react";
 import useLocalStorage from "../hooks/useLocalStorage.js";
 
 const FinanceContext = createContext(null);
@@ -47,7 +48,7 @@ export function FinanceProvider({ children }) {
     }));
   }
 
-  const addTransaction = (transaction) => {
+  const addTransaction = useCallback((transaction) => {
     const next = {
       ...transaction,
       id: createId(),
@@ -56,25 +57,25 @@ export function FinanceProvider({ children }) {
       ...prev,
       transactions: [next, ...prev.transactions],
     }));
-  };
+  }, [setData]);
 
-  const updateTransaction = (id, updates) => {
+  const updateTransaction = useCallback((id, updates) => {
     setData((prev) => ({
       ...prev,
       transactions: prev.transactions.map((transaction) =>
         transaction.id === id ? { ...transaction, ...updates } : transaction
       ),
     }));
-  };
+  }, [setData]);
 
-  const deleteTransaction = (id) => {
+  const deleteTransaction = useCallback((id) => {
     setData((prev) => ({
       ...prev,
       transactions: prev.transactions.filter((transaction) => transaction.id !== id),
     }));
-  };
+  }, [setData]);
 
-  const addBudget = (budget) => {
+  const addBudget = useCallback((budget) => {
     const next = {
       alertAt: 80,
       period: "monthly",
@@ -85,25 +86,25 @@ export function FinanceProvider({ children }) {
       ...prev,
       budgets: [next, ...prev.budgets],
     }));
-  };
+  }, [setData]);
 
-  const updateBudget = (id, updates) => {
+  const updateBudget = useCallback((id, updates) => {
     setData((prev) => ({
       ...prev,
       budgets: prev.budgets.map((budget) =>
         budget.id === id ? { ...budget, ...updates } : budget
       ),
     }));
-  };
+  }, [setData]);
 
-  const deleteBudget = (id) => {
+  const deleteBudget = useCallback((id) => {
     setData((prev) => ({
       ...prev,
       budgets: prev.budgets.filter((budget) => budget.id !== id),
     }));
-  };
+  }, [setData]);
 
-  const updateSettings = (updates) => {
+  const updateSettings = useCallback((updates) => {
     setData((prev) => ({
       ...prev,
       settings: {
@@ -111,7 +112,7 @@ export function FinanceProvider({ children }) {
         ...updates,
       },
     }));
-  };
+  }, [setData]);
 
   const transactions = data.transactions;
   const budgets = data.budgets;

@@ -297,6 +297,13 @@
   font-size: 0.9rem;
 }
 
+.filter-info {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
 .list {
   display: grid;
   gap: 12px;

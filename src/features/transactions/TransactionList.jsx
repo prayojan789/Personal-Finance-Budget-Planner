@@ -10,11 +10,18 @@ export default function TransactionList() {
     category: "all",
     from: "",
     to: "",
+    minAmount: "",
+    maxAmount: "",
   });
+  const [sort, setSort] = useState("newest");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSortChange = (event) => {
+    setSort(event.target.value);
   };
 
   const filtered = useMemo(() => {
@@ -30,11 +37,39 @@ export default function TransactionList() {
       const date = new Date(transaction.date);
       const matchFrom = filters.from ? date >= new Date(filters.from) : true;
       const matchTo = filters.to ? date <= new Date(filters.to) : true;
-      return matchSearch && matchType && matchCategory && matchFrom && matchTo;
+      
+      const amount = Number(transaction.amount || 0);
+      const matchMinAmount = filters.minAmount ? amount >= Number(filters.minAmount) : true;
+      const matchMaxAmount = filters.maxAmount ? amount <= Number(filters.maxAmount) : true;
+      
+      return (
+        matchSearch &&
+        matchType &&
+        matchCategory &&
+        matchFrom &&
+        matchTo &&
+        matchMinAmount &&
+        matchMaxAmount
+      );
     });
   }, [transactions, filters]);
 
-  const sorted = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const sorted = useMemo(() => {
+    const copy = [...filtered];
+    
+    switch (sort) {
+      case "newest":
+        return copy.sort((a, b) => new Date(b.date) - new Date(a.date));
+      case "oldest":
+        return copy.sort((a, b) => new Date(a.date) - new Date(b.date));
+      case "highest":
+        return copy.sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0));
+      case "lowest":
+        return copy.sort((a, b) => Number(a.amount || 0) - Number(b.amount || 0));
+      default:
+        return copy.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+  }, [filtered, sort]);
 
   return (
     <section className="transaction-list">
@@ -42,19 +77,21 @@ export default function TransactionList() {
         <h2>Transactions</h2>
         <span className="section-tag">Filter and edit</span>
       </div>
+      
       <div className="filters">
         <input
           name="search"
           value={filters.search}
           onChange={handleChange}
           placeholder="Search description"
+          title="Search by transaction description"
         />
-        <select name="type" value={filters.type} onChange={handleChange}>
+        <select name="type" value={filters.type} onChange={handleChange} title="Filter by type">
           <option value="all">All types</option>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
-        <select name="category" value={filters.category} onChange={handleChange}>
+        <select name="category" value={filters.category} onChange={handleChange} title="Filter by category">
           <option value="all">All categories</option>
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -62,15 +99,55 @@ export default function TransactionList() {
             </option>
           ))}
         </select>
-        <input name="from" type="date" value={filters.from} onChange={handleChange} />
-        <input name="to" type="date" value={filters.to} onChange={handleChange} />
+        <input 
+          name="from" 
+          type="date" 
+          value={filters.from} 
+          onChange={handleChange}
+          title="From date"
+        />
+        <input 
+          name="to" 
+          type="date" 
+          value={filters.to} 
+          onChange={handleChange}
+          title="To date"
+        />
+      </div>
+
+      <div className="filters">
+        <input
+          name="minAmount"
+          type="number"
+          placeholder="Min amount"
+          value={filters.minAmount}
+          onChange={handleChange}
+          title="Minimum transaction amount"
+        />
+        <input
+          name="maxAmount"
+          type="number"
+          placeholder="Max amount"
+          value={filters.maxAmount}
+          onChange={handleChange}
+          title="Maximum transaction amount"
+        />
+        <select value={sort} onChange={handleSortChange} title="Sort transactions">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="highest">Highest amount</option>
+          <option value="lowest">Lowest amount</option>
+        </select>
       </div>
 
       <div className="list">
         {sorted.length ? (
-          sorted.map((transaction) => (
-            <TransactionItem key={transaction.id} transaction={transaction} />
-          ))
+          <>
+            <p className="filter-info">{sorted.length} transaction(s)</p>
+            {sorted.map((transaction) => (
+              <TransactionItem key={transaction.id} transaction={transaction} />
+            ))}
+          </>
         ) : (
           <p className="empty">No transactions match these filters.</p>
         )}
