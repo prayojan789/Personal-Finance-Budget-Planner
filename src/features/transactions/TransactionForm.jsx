@@ -25,7 +25,7 @@ export default function TransactionForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!form.description || !form.amount) {
-      setError("Add a description and amount.");
+      setError("Add a description and  amount.");
       return;
     }
     addTransaction({
@@ -40,7 +40,7 @@ export default function TransactionForm() {
     <section className="transaction-form" id="transactions">
       <div className="section-header">
         <h2>Add Transaction</h2>
-        <span className="section-tag">Quick capture</span>
+        <span className="secltion-tag"> Quick capture</span>
       </div>
       <form className="form" onSubmit={handleSubmit}>
         <div className="form__row">
@@ -53,9 +53,9 @@ export default function TransactionForm() {
           />
           <Input
             label="Amount"
-            name="amount"
+            name="amo unt"
             type="number"
-            step="0.01"
+             step="0.01"
             value={form.amount}
             onChange={handleChange}
             placeholder="0.00"

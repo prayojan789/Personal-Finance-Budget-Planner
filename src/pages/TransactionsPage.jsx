@@ -14,7 +14,7 @@ export default function TransactionsPage() {
             <Input label="Description" placeholder="Groceries" />
             <Input label="Amount" type="number" placeholder="120" />
           </div>
-          <Button className="btn--primary">Save draft</Button>
+          <Button className="btn--primary"> Save draft </Button>
         </div>
       </div>
       <div>

@@ -3,15 +3,22 @@ import { useFinance } from "../../context/FinanceContext.jsx";
 import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 
+const getMonthKey = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  return `${date.getFullYear()}-${month}`;
+};
+
 const defaultForm = {
   category: "Housing",
   limit: "",
   alertAt: 80,
-  startDate: new Date().toISOString().slice(0, 10),
+  month: new Date().toISOString().slice(0, 7),
 };
 
 export default function BudgetForm() {
-  const { addBudget, categories } = useFinance();
+  const { addBudget, categories, budgets } = useFinance();
   const [form, setForm] = useState(defaultForm);
   const [error, setError] = useState("");
 
@@ -26,8 +33,19 @@ export default function BudgetForm() {
       setError("Add a monthly limit.");
       return;
     }
+    const monthValue = form.month || new Date().toISOString().slice(0, 7);
+    const hasDuplicate = budgets.some((budget) => {
+      const budgetMonth = budget.month || getMonthKey(budget.startDate);
+      return budget.category === form.category && budgetMonth === monthValue;
+    });
+    if (hasDuplicate) {
+      setError("A budget for this category and month already exists.");
+      return;
+    }
     addBudget({
       ...form,
+      month: monthValue,
+      startDate: `${monthValue}-01`,
       limit: Number(form.limit),
       alertAt: Number(form.alertAt || 80),
     });
@@ -69,10 +87,10 @@ export default function BudgetForm() {
           onChange={handleChange}
         />
         <Input
-          label="Start date"
-          name="startDate"
-          type="date"
-          value={form.startDate}
+          label="Budget month"
+          name="month"
+          type="month"
+          value={form.month}
           onChange={handleChange}
         />
         {error ? <p className="form__error">{error}</p> : null}

@@ -154,26 +154,36 @@ export function FinanceProvider({ children }) {
     return acc;
   }, {});
 
+  const currentMonthKey = getMonthKey(new Date());
   const budgetsWithSpend = budgets.map((budget) => {
+    const budgetMonthKey = budget.month || getMonthKey(budget.startDate) || currentMonthKey;
     const spent = transactions
-      .filter(
-        (transaction) =>
-          transaction.type === "expense" &&
-          (transaction.category || "Other") === budget.category
-      )
+      .filter((transaction) => {
+        if (transaction.type !== "expense") return false;
+        const matchesCategory = (transaction.category || "Other") === budget.category;
+        const matchesMonth = getMonthKey(transaction.date) === budgetMonthKey;
+        return matchesCategory && matchesMonth;
+      })
       .reduce((sum, transaction) => sum + Number(transaction.amount || 0), 0);
-    const remaining = Number(budget.limit || 0) - spent;
-    const progress = budget.limit ? Math.min((spent / budget.limit) * 100, 120) : 0;
+    const limit = Number(budget.limit || 0);
+    const remaining = limit - spent;
+    const progress = limit ? Math.min((spent / limit) * 100, 120) : 0;
+    const alertAt = Number(budget.alertAt || 80);
+    const isOver = remaining < 0 || progress >= 100;
+    const isWarning = !isOver && limit > 0 && progress >= alertAt;
     return {
       ...budget,
+      monthKey: budgetMonthKey,
       spent,
       remaining,
       progress,
+      alertAt,
+      status: isOver ? "danger" : isWarning ? "warning" : "neutral",
     };
   });
 
   const alerts = budgetsWithSpend.filter(
-    (budget) => budget.limit && budget.progress >= (budget.alertAt || 80)
+    (budget) => budget.limit && (budget.progress >= budget.alertAt || budget.remaining < 0)
   );
 
   const value = useMemo(
