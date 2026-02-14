@@ -2,8 +2,12 @@ import ReportsPanel from "../features/reports/ReportsPanel.jsx";
 
 export default function ReportsPage() {
   return (
-    <section className="panel reveal">
+    <div className="page">
+      <div className="page__header">
+        <h1>Reports</h1>
+        <p>Generate and export financial reports.</p>
+      </div>
       <ReportsPanel />
-    </section>
+    </div>
   );
 }

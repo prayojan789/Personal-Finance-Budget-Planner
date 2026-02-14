@@ -186,19 +186,123 @@ export function FinanceProvider({ children }) {
     (budget) => budget.limit && (budget.progress >= budget.alertAt || budget.remaining < 0)
   );
 
+  // Advanced Analytics
+  const monthlySummaryArray = Object.values(monthlySummary).sort((a, b) =>
+    a.month.localeCompare(b.month)
+  );
+
+  // Month-to-month comparison
+  const monthComparison = useMemo(() => {
+    if (monthlySummaryArray.length < 2) return null;
+    const current = monthlySummaryArray[monthlySummaryArray.length - 1];
+    const previous = monthlySummaryArray[monthlySummaryArray.length - 2];
+    return {
+      currentMonth: current.month,
+      previousMonth: previous.month,
+      expenseChange: current.expenses - previous.expenses,
+      expenseChangePercent:
+        previous.expenses > 0
+          ? ((current.expenses - previous.expenses) / previous.expenses) * 100
+          : 0,
+      incomeChange: current.income - previous.income,
+      incomeChangePercent:
+        previous.income > 0 ? ((current.income - previous.income) / previous.income) * 100 : 0,
+    };
+  }, [monthlySummaryArray]);
+
+  // Category trends over last 6 months
+  const categoryTrends = useMemo(() => {
+    const trends = {};
+    const last6Months = monthlySummaryArray.slice(-6);
+    
+    last6Months.forEach((month) => {
+      const monthTxns = transactions.filter(
+        (t) => t.type === "expense" && getMonthKey(t.date) === month.month
+      );
+      monthTxns.forEach((txn) => {
+        const cat = txn.category || "Other";
+        if (!trends[cat]) trends[cat] = [];
+        trends[cat].push({ month: month.month, amount: Number(txn.amount || 0) });
+      });
+    });
+
+    Object.keys(trends).forEach((cat) => {
+      trends[cat] = {
+        category: cat,
+        data: trends[cat].sort((a, b) => a.month.localeCompare(b.month)),
+        average: trends[cat].reduce((sum, d) => sum + d.amount, 0) / trends[cat].length,
+        total: trends[cat].reduce((sum, d) => sum + d.amount, 0),
+      };
+    });
+    
+    return trends;
+  }, [monthlySummaryArray, transactions]);
+
+  // Spending forecast (next month based on current trend)
+  const spendingForecast = useMemo(() => {
+    if (monthlySummaryArray.length === 0) return null;
+    const last3Months = monthlySummaryArray.slice(-3);
+    const avgExpenses =
+      last3Months.reduce((sum, m) => sum + m.expenses, 0) / Math.max(last3Months.length, 1);
+    const avgIncome =
+      last3Months.reduce((sum, m) => sum + m.income, 0) / Math.max(last3Months.length, 1);
+    const trendExpenses = last3Months.map((m) => m.expenses);
+    const isIncreasing =
+      trendExpenses.length >= 2 &&
+      trendExpenses[trendExpenses.length - 1] > trendExpenses[trendExpenses.length - 2];
+
+    return {
+      projectedExpenses: avgExpenses,
+      projectedIncome: avgIncome,
+      trend: isIncreasing ? "increasing" : "decreasing",
+      confidence: Math.min(last3Months.length * 0.33, 1),
+    };
+  }, [monthlySummaryArray]);
+
+  // Savings rate calculation
+  const savingsRate = useMemo(() => {
+    const last12Months = monthlySummaryArray.slice(-12);
+    if (last12Months.length === 0) return 0;
+    const totalIncome = last12Months.reduce((sum, m) => sum + m.income, 0);
+    const totalExpenses = last12Months.reduce((sum, m) => sum + m.expenses, 0);
+    if (totalIncome === 0) return 0;
+    return Math.round(((totalIncome - totalExpenses) / totalIncome) * 100);
+  }, [monthlySummaryArray]);
+
+  // Spending habits by category (percentage)
+  const spendingHabits = useMemo(() => {
+    const habits = {};
+    const totalExpense = Object.values(categoryTotals).reduce((sum, v) => sum + v, 0);
+    if (totalExpense === 0) return {};
+    
+    Object.entries(categoryTotals).forEach(([cat, amount]) => {
+      habits[cat] = {
+        category: cat,
+        amount,
+        percentage: (amount / totalExpense) * 100,
+      };
+    });
+
+    return Object.values(habits).sort((a, b) => b.amount - a.amount);
+  }, [categoryTotals]);
+
   const value = useMemo(
     () => ({
       transactions,
       budgets,
       settings,
       totals,
-      monthlySummary: Object.values(monthlySummary).sort((a, b) =>
-        a.month.localeCompare(b.month)
-      ),
+      monthlySummary: monthlySummaryArray,
       categoryTotals,
       budgetsWithSpend,
       alerts,
       categories: defaultCategories,
+      // Advanced analytics
+      monthComparison,
+      categoryTrends,
+      spendingForecast,
+      savingsRate,
+      spendingHabits,
       addTransaction,
       updateTransaction,
       deleteTransaction,
@@ -212,10 +316,15 @@ export function FinanceProvider({ children }) {
       budgets,
       settings,
       totals,
-      monthlySummary,
+      monthlySummaryArray,
       categoryTotals,
       budgetsWithSpend,
       alerts,
+      monthComparison,
+      categoryTrends,
+      spendingForecast,
+      savingsRate,
+      spendingHabits,
       addTransaction,
       updateTransaction,
       deleteTransaction,
