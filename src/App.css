@@ -22,19 +22,22 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 40px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.82);
   border-bottom: 1px solid var(--stroke);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 
 .navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: "Fraunces", serif;
   font-size: 1.4rem;
 }
 
 .sidebar {
-  background: var(--surface);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f7f7 100%);
   border: 1px solid var(--stroke);
   border-radius: 20px;
   padding: 20px;
@@ -50,6 +53,9 @@
 
 .sidebar__nav button,
 .sidebar__nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 14px;
   border-radius: 12px;
   transition: background-color 150ms ease;
@@ -68,6 +74,12 @@
   font-weight: 600;
 }
 
+.sidebar__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .sidebar__nav button:hover,
 .sidebar__nav a:hover {
   background: var(--bg);
@@ -77,6 +89,22 @@
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.navbar__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.icon--lg {
+  width: 22px;
+  height: 22px;
 }
 
 .user-badge {
@@ -559,6 +587,9 @@
 }
 
 .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   border: 1px solid var(--stroke);
   border-radius: 999px;
   padding: 10px 18px;
@@ -571,7 +602,7 @@
 .btn:hover {
   transform: translateY(-1px);
   border-color: var(--accent);
-  box-shadow: 0 10px 20px rgba(224, 122, 95, 0.2);
+  box-shadow: 0 10px 20px rgba(14, 165, 164, 0.2);
 }
 
 .btn--primary {
@@ -582,6 +613,17 @@
 
 .btn--ghost {
   background: transparent;
+}
+
+.btn--sm {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+
+.quick-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .field {
@@ -1020,6 +1062,92 @@
   color: var(--accent-2);
   font-size: 0.85rem;
   font-weight: 500;
+}
+
+.goals-savings {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(320px, 2fr);
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: start;
+}
+
+.goals-list .goals-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.goal-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: var(--surface);
+}
+
+.goal-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.goal-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.goal-card__metrics p {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+}
+
+.goal-card__dates {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+
+.goal-card__required {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.goal-card__actions {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  align-items: end;
+}
+
+.goal-card__input {
+  margin: 0;
+}
+
+.goal-card__buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .goals-savings {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-card__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-card__buttons {
+    justify-content: flex-start;
+  }
 }
 
 /* Analytics Page */

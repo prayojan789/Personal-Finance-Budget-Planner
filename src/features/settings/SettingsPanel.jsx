@@ -5,11 +5,22 @@ import { exportToCSV, importFromCSV } from "../../services/csvService.js";
 
 const timezones = ["local", "UTC", "America/New_York", "Europe/London", "Asia/Tokyo", "Asia/Kathmandu"];
 const currencies = ["NPR", "USD", "EUR", "GBP", "JPY", "CAD", "AUD", "INR"];
+const themes = ["light", "dark"];
 
 export default function SettingsPanel() {
-  const { settings, updateSettings, transactions, budgets, addTransaction, addBudget } =
-    useFinance();
+  const {
+    settings,
+    updateSettings,
+    transactions,
+    budgets,
+    goals,
+    addTransaction,
+    addBudget,
+    addGoal,
+    resetData,
+  } = useFinance();
   const [importMessage, setImportMessage] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
   const fileInputRef = useRef(null);
 
   const handleChange = (event) => {
@@ -20,7 +31,7 @@ export default function SettingsPanel() {
   const handleExport = () => {
     const timestamp = new Date().toISOString().slice(0, 10);
     exportToCSV(
-      { transactions, budgets },
+      { transactions, budgets, goals },
       `budget-planner-export-${timestamp}.csv`
     );
     setImportMessage("Data exported successfully!");
@@ -36,7 +47,7 @@ export default function SettingsPanel() {
     if (!file) return;
 
     try {
-      const { transactions: importedTxns, budgets: importedBudgets } =
+      const { transactions: importedTxns, budgets: importedBudgets, goals: importedGoals } =
         await importFromCSV(file);
 
       let addedCount = 0;
@@ -47,6 +58,11 @@ export default function SettingsPanel() {
 
       importedBudgets.forEach((budget) => {
         addBudget(budget);
+        addedCount++;
+      });
+
+      importedGoals.forEach((goal) => {
+        addGoal(goal);
         addedCount++;
       });
 
@@ -61,6 +77,16 @@ export default function SettingsPanel() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleReset = () => {
+    const confirmed = window.confirm(
+      "This will clear all transactions, budgets, and savings goals. Continue?"
+    );
+    if (!confirmed) return;
+    resetData();
+    setResetMessage("Data reset successfully.");
+    setTimeout(() => setResetMessage(""), 4000);
   };
 
   return (
@@ -92,6 +118,16 @@ export default function SettingsPanel() {
               ))}
             </select>
           </label>
+          <label className="field">
+            <span className="field__label">Theme</span>
+            <select name="theme" value={settings.theme || "light"} onChange={handleChange}>
+              {themes.map((theme) => (
+                <option key={theme} value={theme}>
+                  {theme[0].toUpperCase() + theme.slice(1)}
+                </option>
+              ))}
+            </select>
+          </label>
           <div className="settings-note">
             <p className="muted">
               Timezone is used for date grouping and reports. Currency updates apply instantly.
@@ -103,7 +139,7 @@ export default function SettingsPanel() {
           <h3>Data Management</h3>
           <div className="settings-section">
             <p className="settings-label">Export your data as CSV</p>
-            <p className="muted">Backup all transactions and budgets to a CSV file.</p>
+            <p className="muted">Backup transactions, budgets, and savings goals to a CSV file.</p>
             <Button className="btn--primary" onClick={handleExport}>
               Export Data
             </Button>
@@ -111,7 +147,7 @@ export default function SettingsPanel() {
 
           <div className="settings-section">
             <p className="settings-label">Import data from CSV</p>
-            <p className="muted">Load transactions and budgets from a previously exported file.</p>
+            <p className="muted">Load transactions, budgets, and goals from a previously exported file.</p>
             <Button onClick={handleImportClick}>Import Data</Button>
             <input
               ref={fileInputRef}
@@ -122,7 +158,16 @@ export default function SettingsPanel() {
             />
           </div>
 
+          <div className="settings-section">
+            <p className="settings-label">Reset local data</p>
+            <p className="muted">Clear transactions, budgets, and savings goals from this device.</p>
+            <Button className="btn--ghost" type="button" onClick={handleReset}>
+              Reset Data
+            </Button>
+          </div>
+
           {importMessage && <p className="import-message">{importMessage}</p>}
+          {resetMessage && <p className="import-message">{resetMessage}</p>}
         </div>
       </div>
     </section>

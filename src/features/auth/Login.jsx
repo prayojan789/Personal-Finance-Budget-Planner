@@ -4,7 +4,7 @@ import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 
 export default function Login() {
-  const { login, isAuthenticated, user } = useAuth();
+  const { login, isAuthenticated, user, session } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -54,7 +54,7 @@ export default function Login() {
           </div>
           <div className="info-row">
             <span>Member since:</span>
-            <strong>{new Date(user.createdAt).toLocaleDateString()}</strong>
+            <strong>{session?.startedAt ? new Date(session.startedAt).toLocaleDateString() : "Today"}</strong>
           </div>
         </div>
       </section>

@@ -7,9 +7,11 @@ const STORAGE_KEY = "budget-planner-data";
 const defaultData = {
   transactions: [],
   budgets: [],
+  goals: [],
   settings: {
     currency: "NPR",
     timezone: "Asia/Kathmandu",
+    theme: "light",
   },
 };
 
@@ -104,6 +106,42 @@ export function FinanceProvider({ children }) {
     }));
   }, [setData]);
 
+  const addGoal = useCallback((goal) => {
+    const next = {
+      ...goal,
+      id: createId(),
+    };
+    setData((prev) => ({
+      ...prev,
+      goals: [next, ...(prev.goals || [])],
+    }));
+  }, [setData]);
+
+  const updateGoal = useCallback((id, updates) => {
+    setData((prev) => ({
+      ...prev,
+      goals: (prev.goals || []).map((goal) =>
+        goal.id === id ? { ...goal, ...updates } : goal
+      ),
+    }));
+  }, [setData]);
+
+  const deleteGoal = useCallback((id) => {
+    setData((prev) => ({
+      ...prev,
+      goals: (prev.goals || []).filter((goal) => goal.id !== id),
+    }));
+  }, [setData]);
+
+  const resetData = useCallback(() => {
+    setData((prev) => ({
+      ...prev,
+      transactions: [],
+      budgets: [],
+      goals: [],
+    }));
+  }, [setData]);
+
   const updateSettings = useCallback((updates) => {
     setData((prev) => ({
       ...prev,
@@ -116,6 +154,7 @@ export function FinanceProvider({ children }) {
 
   const transactions = data.transactions;
   const budgets = data.budgets;
+  const goals = data.goals || [];
   const settings = data.settings;
 
   const totals = transactions.reduce(
@@ -273,7 +312,7 @@ export function FinanceProvider({ children }) {
   const spendingHabits = useMemo(() => {
     const habits = {};
     const totalExpense = Object.values(categoryTotals).reduce((sum, v) => sum + v, 0);
-    if (totalExpense === 0) return {};
+    if (totalExpense === 0) return [];
     
     Object.entries(categoryTotals).forEach(([cat, amount]) => {
       habits[cat] = {
@@ -290,6 +329,7 @@ export function FinanceProvider({ children }) {
     () => ({
       transactions,
       budgets,
+      goals,
       settings,
       totals,
       monthlySummary: monthlySummaryArray,
@@ -309,11 +349,16 @@ export function FinanceProvider({ children }) {
       addBudget,
       updateBudget,
       deleteBudget,
+      addGoal,
+      updateGoal,
+      deleteGoal,
+      resetData,
       updateSettings,
     }),
     [
       transactions,
       budgets,
+      goals,
       settings,
       totals,
       monthlySummaryArray,
@@ -331,6 +376,10 @@ export function FinanceProvider({ children }) {
       addBudget,
       updateBudget,
       deleteBudget,
+      addGoal,
+      updateGoal,
+      deleteGoal,
+      resetData,
       updateSettings,
     ]
   );

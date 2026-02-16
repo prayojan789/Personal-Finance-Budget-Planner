@@ -4,7 +4,7 @@
  */
 
 export const exportToCSV = (data, filename = "budget-planner-data.csv") => {
-  const { transactions, budgets } = data;
+  const { transactions, budgets, goals } = data;
   let csv = "type,description,amount,category,date,note\n";
 
   // Add transactions
@@ -20,7 +20,15 @@ export const exportToCSV = (data, filename = "budget-planner-data.csv") => {
     csv += `"${b.category}",${b.limit},"${b.month || ""}",${b.alertAt || 80}\n`;
   });
 
-  // Create blob and download
+  // Add a separator for goals
+  csv += "\n# GOALS\n";
+  csv += "name,targetAmount,targetDate,savedAmount,createdAt\n";
+  (goals || []).forEach((goal) => {
+    const name = (goal.name || "").replace(/"/g, '""');
+    csv += `"${name}",${goal.targetAmount},"${goal.targetDate}",${goal.savedAmount || 0},"${goal.createdAt || ""}"\n`;
+  });
+
+  //- Create blob and download
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -39,18 +47,40 @@ export const importFromCSV = (file) => {
         const lines = csv.split("\n");
         const transactions = [];
         const budgets = [];
+        const goals = [];
         let isReadingBudgets = false;
+        let isReadingGoals = false;
 
         for (let i = 1; i < lines.length; i++) {
           const line = lines[i].trim();
           if (!line) continue;
           if (line.startsWith("#")) {
-            isReadingBudgets = true;
-            i++; // Skip header
-            continue;
+            if (line.includes("BUDGETS")) {
+              isReadingBudgets = true;
+              isReadingGoals = false;
+              i++; // Skip header
+              continue;
+            }
+            if (line.includes("GOALS")) {
+              isReadingBudgets = false;
+              isReadingGoals = true;
+              i++; // Skip header
+              continue;
+            }
           }
 
-          if (isReadingBudgets) {
+          if (isReadingGoals) {
+            const parsed = parseCSVLine(line);
+            if (parsed.length >= 3 && parsed[0] && !parsed[0].startsWith("#")) {
+              goals.push({
+                name: parsed[0].replace(/"/g, ""),
+                targetAmount: Number(parsed[1]),
+                targetDate: parsed[2].replace(/"/g, ""),
+                savedAmount: Number(parsed[3] || 0),
+                createdAt: parsed[4] ? parsed[4].replace(/"/g, "") : "",
+              });
+            }
+          } else if (isReadingBudgets) {
             const parsed = parseCSVLine(line);
             if (parsed.length >= 3 && parsed[0] && !parsed[0].startsWith("#")) {
               budgets.push({
@@ -66,7 +96,7 @@ export const importFromCSV = (file) => {
               transactions.push({
                 type: parsed[0],
                 description: parsed[1].replace(/"/g, ""),
-                amount: Number(parsed[2]),
+                  amount: Number(parsed[2]),
                 category: parsed[3].replace(/"/g, ""),
                 date: parsed[4].replace(/"/g, ""),
                 note: parsed[5] ? parsed[5].replace(/"/g, "") : "",
@@ -75,7 +105,7 @@ export const importFromCSV = (file) => {
           }
         }
 
-        resolve({ transactions, budgets });
+        resolve({ transactions, budgets, goals });
       } catch (error) {
         reject(new Error(`Failed to parse CSV: ${error.message}`));
       }

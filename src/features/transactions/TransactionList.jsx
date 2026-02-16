@@ -24,6 +24,15 @@ export default function TransactionList() {
     setSort(event.target.value);
   };
 
+  const setTodayFilter = () => {
+    const today = new Date().toISOString().split('T')[0];
+    setFilters((prev) => ({ ...prev, from: today, to: today }));
+  };
+
+  const clearDateFilter = () => {
+    setFilters((prev) => ({ ...prev, from: "", to: "" }));
+  };
+
   const filtered = useMemo(() => {
     return transactions.filter((transaction) => {
       const matchSearch = filters.search
@@ -76,6 +85,15 @@ export default function TransactionList() {
       <div className="section-header">
         <h2>Transactions</h2>
         <span className="section-tag">Filter and edit</span>
+      </div>
+
+      <div className="quick-filters">
+        <button onClick={setTodayFilter} className="btn btn--sm">
+          📅 Today
+        </button>
+        <button onClick={clearDateFilter} className="btn btn--sm">
+          Clear Dates
+        </button>
       </div>
       
       <div className="filters">

@@ -4,7 +4,7 @@ import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 
 export default function Register() {
-  const { register, isAuthenticated, user } = useAuth();
+  const { register, isAuthenticated, user, session } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -51,8 +51,8 @@ export default function Register() {
         <div className="auth-info">
           <p>Your account has been successfully created and you're now logged in.</p>
           <div className="info-row">
-            <span>Account ID:</span>
-            <strong>#{user.id}</strong>
+            <span>Session started:</span>
+            <strong>{session?.startedAt ? new Date(session.startedAt).toLocaleDateString() : "Today"}</strong>
           </div>
         </div>
       </section>
