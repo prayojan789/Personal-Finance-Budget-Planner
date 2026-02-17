@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 
 export default function Login() {
   const { login, isAuthenticated, user, session } = useAuth();
+  const toast = useToast();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -17,7 +18,6 @@ export default function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setError("");
-    setSuccess("");
 
     if (!form.email || !form.password) {
       setError("Email and password are required");
@@ -31,7 +31,7 @@ export default function Login() {
 
     const result = login(form.email, form.password);
     if (result.success) {
-      setSuccess("Login successful!");
+      toast.success("Login successful!");
       setForm({ email: "", password: "" });
     } else {
       setError(result.error);
@@ -83,7 +83,6 @@ export default function Login() {
           placeholder="••••••"
         />
         {error && <p className="form__error">{error}</p>}
-        {success && <p className="form__success">{success}</p>}
         <Button className="btn--primary" type="submit">
           Login
         </Button>

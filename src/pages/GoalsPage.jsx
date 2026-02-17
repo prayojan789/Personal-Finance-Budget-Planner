@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useFinance } from "../context/FinanceContext.jsx";
+import { useToast } from "../context/toastCore.js";
 import formatCurrency from "../utils/formatCurrency.js";
 import Button from "../components/common/Button.jsx";
 import Input from "../components/common/Input.jsx";
@@ -51,6 +52,7 @@ const defaultGoalForm = {
 
 export default function GoalsPage() {
   const { budgetsWithSpend, settings, goals, addGoal, updateGoal, deleteGoal } = useFinance();
+  const toast = useToast();
   const currentMonthKey = useMemo(() => getMonthKey(new Date()), []);
   const [expandedMonth, setExpandedMonth] = useState(currentMonthKey);
   const [goalForm, setGoalForm] = useState(defaultGoalForm);
@@ -92,6 +94,7 @@ export default function GoalsPage() {
       savedAmount,
       createdAt: new Date().toISOString(),
     });
+    toast.success("Savings goal created!");
     setGoalForm(defaultGoalForm);
     setGoalError("");
   };
@@ -104,7 +107,13 @@ export default function GoalsPage() {
     const amount = Number(contributions[goal.id] || 0);
     if (!amount || amount <= 0) return;
     updateGoal(goal.id, { savedAmount: Number(goal.savedAmount || 0) + amount });
+    toast.success(`Added ${formatCurrency(amount, settings.currency)} to ${goal.name}!`);
     setContributions((prev) => ({ ...prev, [goal.id]: "" }));
+  };
+
+  const handleDeleteGoal = (goalId, goalName) => {
+    deleteGoal(goalId);
+    toast.info(`Deleted goal: ${goalName}`);
   };
 
   const monthGroups = useMemo(() => {
@@ -322,7 +331,7 @@ export default function GoalsPage() {
                         <Button
                           className="btn--ghost"
                           type="button"
-                          onClick={() => deleteGoal(goal.id)}
+                          onClick={() => handleDeleteGoal(goal.id, goal.name)}
                         >
                           Delete
                         </Button>

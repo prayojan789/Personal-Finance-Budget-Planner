@@ -1,4 +1,5 @@
 import { useFinance } from "../../context/FinanceContext.jsx";
+import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 import formatCurrency from "../../utils/formatCurrency.js";
@@ -20,6 +21,7 @@ const formatMonth = (value) => {
 
 export default function BudgetList() {
   const { budgetsWithSpend, settings, updateBudget, deleteBudget } = useFinance();
+  const toast = useToast();
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({ limit: "", alertAt: 80, month: "" });
   const currentMonthKey = useMemo(() => getMonthKey(new Date()), []);
@@ -69,7 +71,13 @@ export default function BudgetList() {
       month: monthValue,
       startDate: `${monthValue}-01`,
     });
+    toast.success("Budget updated successfully!");
     setEditingId(null);
+  };
+
+  const handleDelete = (id) => {
+    deleteBudget(id);
+    toast.info("Budget deleted.");
   };
 
   return (
@@ -161,7 +169,7 @@ export default function BudgetList() {
                   <Button type="button" onClick={() => startEdit(budget)}>
                     Adjust
                   </Button>
-                  <Button type="button" onClick={() => deleteBudget(budget.id)}>
+                  <Button type="button" onClick={() => handleDelete(budget.id)}>
                     Delete
                   </Button>
                 </div>

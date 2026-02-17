@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 
 export default function Register() {
   const { register, isAuthenticated, user, session } = useAuth();
+  const toast = useToast();
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -17,7 +18,6 @@ export default function Register() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setError("");
-    setSuccess("");
 
     if (!form.name || !form.email || !form.password) {
       setError("All fields are required");
@@ -36,7 +36,7 @@ export default function Register() {
 
     const result = register(form.name, form.email, form.password);
     if (result.success) {
-      setSuccess("Registration successful!");
+      toast.success("Registration successful! Welcome aboard!");
       setForm({ name: "", email: "", password: "", confirmPassword: "" });
     } else {
       setError(result.error);
@@ -96,7 +96,6 @@ export default function Register() {
           placeholder="••••••"
         />
         {error && <p className="form__error">{error}</p>}
-        {success && <p className="form__success">{success}</p>}
         <Button className="btn--primary" type="submit">
           Register
         </Button>

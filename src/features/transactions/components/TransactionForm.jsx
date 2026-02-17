@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useFinance } from "../../context/FinanceContext.jsx";
-import { useToast } from "../../context/toastCore.js";
-import Button from "../../components/common/Button.jsx";
-import Input from "../../components/common/Input.jsx";
+import { useFinance } from "../../../context/FinanceContext.jsx";
+import { useToast } from "../../../context/toastCore.js";
+import Button from "../../../components/common/Button.jsx";
+import Input from "../../../components/common/Input.jsx";
 
 const defaultForm = {
   description: "",
@@ -58,7 +58,7 @@ export default function TransactionForm() {
             label="Amount"
             name="amount"
             type="number"
-             step="0.01"
+            step="0.01"
             value={form.amount}
             onChange={handleChange}
             placeholder="0.00"

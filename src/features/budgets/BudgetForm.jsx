@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useFinance } from "../../context/FinanceContext.jsx";
+import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
 
@@ -19,6 +20,7 @@ const defaultForm = {
 
 export default function BudgetForm() {
   const { addBudget, categories, budgets } = useFinance();
+  const toast = useToast();
   const [form, setForm] = useState(defaultForm);
   const [error, setError] = useState("");
 
@@ -49,6 +51,7 @@ export default function BudgetForm() {
       limit: Number(form.limit),
       alertAt: Number(form.alertAt || 80),
     });
+    toast.success("Budget created successfully!");
     setForm(defaultForm);
     setError("");
   };

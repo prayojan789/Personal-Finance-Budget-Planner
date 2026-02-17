@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { FixedSizeList as List } from "react-window";
-import { useFinance } from "../../context/FinanceContext.jsx";
+import { useFinance } from "../../../context/FinanceContext.jsx";
 import TransactionItem from "./TransactionItem.jsx";
-import useDebouncedValue from "../../hooks/useDebouncedValue.js";
+import useDebouncedValue from "../../../hooks/useDebouncedValue.js";
 
 export default function TransactionList() {
   const { transactions, categories } = useFinance();
@@ -28,7 +28,7 @@ export default function TransactionList() {
   };
 
   const setTodayFilter = () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     setFilters((prev) => ({ ...prev, from: today, to: today }));
   };
 
@@ -49,11 +49,11 @@ export default function TransactionList() {
       const date = new Date(transaction.date);
       const matchFrom = filters.from ? date >= new Date(filters.from) : true;
       const matchTo = filters.to ? date <= new Date(filters.to) : true;
-      
+
       const amount = Number(transaction.amount || 0);
       const matchMinAmount = filters.minAmount ? amount >= Number(filters.minAmount) : true;
       const matchMaxAmount = filters.maxAmount ? amount <= Number(filters.maxAmount) : true;
-      
+
       return (
         matchSearch &&
         matchType &&
@@ -68,7 +68,7 @@ export default function TransactionList() {
 
   const sorted = useMemo(() => {
     const copy = [...filtered];
-    
+
     switch (sort) {
       case "newest":
         return copy.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -92,13 +92,13 @@ export default function TransactionList() {
 
       <div className="quick-filters">
         <button onClick={setTodayFilter} className="btn btn--sm">
-          📅 Today
+          Today
         </button>
         <button onClick={clearDateFilter} className="btn btn--sm">
           Clear Dates
         </button>
       </div>
-      
+
       <div className="filters">
         <input
           name="search"
@@ -112,7 +112,12 @@ export default function TransactionList() {
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
-        <select name="category" value={filters.category} onChange={handleChange} title="Filter by category">
+        <select
+          name="category"
+          value={filters.category}
+          onChange={handleChange}
+          title="Filter by category"
+        >
           <option value="all">All categories</option>
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -120,17 +125,17 @@ export default function TransactionList() {
             </option>
           ))}
         </select>
-        <input 
-          name="from" 
-          type="date" 
-          value={filters.from} 
+        <input
+          name="from"
+          type="date"
+          value={filters.from}
           onChange={handleChange}
           title="From date"
         />
-        <input 
-          name="to" 
-          type="date" 
-          value={filters.to} 
+        <input
+          name="to"
+          type="date"
+          value={filters.to}
           onChange={handleChange}
           title="To date"
         />

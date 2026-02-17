@@ -1,5 +1,5 @@
-import TransactionForm from "../features/transactions/TransactionForm.jsx";
-import TransactionList from "../features/transactions/TransactionList.jsx";
+import TransactionForm from "../features/transactions/components/TransactionForm.jsx";
+import TransactionList from "../features/transactions/components/TransactionList.jsx";
 
 export default function TransactionsPage() {
   return (

@@ -1,12 +1,14 @@
-import DashboardPage from "../pages/DashboardPage.jsx";
-import BudgetsPage from "../pages/BudgetsPage.jsx";
-import TransactionsPage from "../pages/TransactionsPage.jsx";
-import ReportsPage from "../pages/ReportsPage.jsx";
-import SettingsPage from "../pages/SettingsPage.jsx";
-import InsightsPage from "../pages/InsightsPage.jsx";
-import GoalsPage from "../pages/GoalsPage.jsx";
-import AnalyticsPage from "../pages/AnalyticsPage.jsx";
-import HomePage from "../pages/HomePage.jsx";
+import { lazy } from "react";
+
+const DashboardPage = lazy(() => import("../pages/DashboardPage.jsx"));
+const BudgetsPage = lazy(() => import("../pages/BudgetsPage.jsx"));
+const TransactionsPage = lazy(() => import("../pages/TransactionsPage.jsx"));
+const ReportsPage = lazy(() => import("../pages/ReportsPage.jsx"));
+const SettingsPage = lazy(() => import("../pages/SettingsPage.jsx"));
+const InsightsPage = lazy(() => import("../pages/InsightsPage.jsx"));
+const GoalsPage = lazy(() => import("../pages/GoalsPage.jsx"));
+const AnalyticsPage = lazy(() => import("../pages/AnalyticsPage.jsx"));
+const HomePage = lazy(() => import("../pages/HomePage.jsx"));
 
 export default function AppRoutes({ currentPage, onNavigate }) {
   const pages = {

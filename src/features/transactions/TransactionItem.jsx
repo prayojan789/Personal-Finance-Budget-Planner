@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useFinance } from "../../context/FinanceContext.jsx";
+import { useToast } from "../../context/toastCore.js";
 import formatCurrency from "../../utils/formatCurrency.js";
 import Button from "../../components/common/Button.jsx";
 import Input from "../../components/common/Input.jsx";
@@ -10,8 +11,9 @@ const formatDate = (value) => {
 	return date.toLocaleDateString();
 };
 
-export default function TransactionItem({ transaction }) {
+function TransactionItem({ transaction }) {
 	const { settings, updateTransaction, deleteTransaction, categories } = useFinance();
+	const toast = useToast();
 	const [editing, setEditing] = useState(false);
 	const [form, setForm] = useState({
 		description: transaction.description || "",
@@ -32,7 +34,13 @@ export default function TransactionItem({ transaction }) {
 			...form,
 			amount: Number(form.amount || 0),
 		});
+		toast.success("Transaction updated!");
 		setEditing(false);
+	};
+
+	const handleDelete = () => {
+		deleteTransaction(transaction.id);
+		toast.info("Transaction deleted.");
 	};
 
 	const handleCancel = () => {
@@ -138,7 +146,7 @@ export default function TransactionItem({ transaction }) {
 						<Button type="button" onClick={() => setEditing(true)}>
 							Edit
 						</Button>
-						<Button type="button" onClick={() => deleteTransaction(transaction.id)}>
+						<Button type="button" onClick={handleDelete}>
 							Delete
 						</Button>
 					</div>
@@ -147,3 +155,5 @@ export default function TransactionItem({ transaction }) {
 		</div>
 	);
 }
+
+export default memo(TransactionItem);

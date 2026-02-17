@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useFinance } from "../../context/FinanceContext.jsx";
+import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
 import { exportToCSV, importFromCSV } from "../../services/csvService.js";
 
@@ -19,8 +20,7 @@ export default function SettingsPanel() {
     addGoal,
     resetData,
   } = useFinance();
-  const [importMessage, setImportMessage] = useState("");
-  const [resetMessage, setResetMessage] = useState("");
+  const toast = useToast();
   const fileInputRef = useRef(null);
 
   const handleChange = (event) => {
@@ -34,8 +34,7 @@ export default function SettingsPanel() {
       { transactions, budgets, goals },
       `budget-planner-export-${timestamp}.csv`
     );
-    setImportMessage("Data exported successfully!");
-    setTimeout(() => setImportMessage(""), 3000);
+    toast.success("Data exported successfully!");
   };
 
   const handleImportClick = () => {
@@ -66,11 +65,9 @@ export default function SettingsPanel() {
         addedCount++;
       });
 
-      setImportMessage(`✓ Imported ${addedCount} items successfully!`);
-      setTimeout(() => setImportMessage(""), 5000);
+      toast.success(`Imported ${addedCount} items successfully!`);
     } catch (error) {
-      setImportMessage(`✗ Import failed: ${error.message}`);
-      setTimeout(() => setImportMessage(""), 5000);
+      toast.error(`Import failed: ${error.message}`);
     }
 
     // Reset file input
@@ -85,8 +82,7 @@ export default function SettingsPanel() {
     );
     if (!confirmed) return;
     resetData();
-    setResetMessage("Data reset successfully.");
-    setTimeout(() => setResetMessage(""), 4000);
+    toast.info("All data has been reset.");
   };
 
   return (
@@ -165,11 +161,8 @@ export default function SettingsPanel() {
               Reset Data
             </Button>
           </div>
-
-          {importMessage && <p className="import-message">{importMessage}</p>}
-          {resetMessage && <p className="import-message">{resetMessage}</p>}
         </div>
       </div>
     </section>
-  );
+   );
 }
