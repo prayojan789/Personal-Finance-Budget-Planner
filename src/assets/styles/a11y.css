@@ -105,14 +105,13 @@ label abbr[title] {
   color: #c53030;
   font-size: 0.875rem;
   margin-top: 4px;
-  display: block;
+  display:        block;
 }
 
 /* Required field indicator */
 .required::after {
   content: ' *';
-  color: #c53030;
-  aria-label: 'required';
+  color: #c53030  ;
 }
 
 /* Status indicator for screen readers */

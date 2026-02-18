@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useFinance } from "../../context/FinanceContext.jsx";
 import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
+import BackupRestore from "../../components/BackupRestore.jsx";
 import { exportToCSV, importFromCSV } from "../../services/csvService.js";
 
 const timezones = ["local", "UTC", "America/New_York", "Europe/London", "Asia/Tokyo", "Asia/Kathmandu"];
@@ -161,6 +162,9 @@ export default function SettingsPanel() {
               Reset Data
             </Button>
           </div>
+
+          {/* Backup & Restore Component */}
+          <BackupRestore />
         </div>
       </div>
     </section>

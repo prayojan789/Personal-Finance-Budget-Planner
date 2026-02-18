@@ -12,7 +12,7 @@ class ErrorBoundary extends React.Component {
     };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component {
     }));
 
     // Log to error tracking service (e.g., Sentry) in production
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.MODE === 'production') {
       console.error('Error logged:', error, errorInfo);
     }
   }
@@ -51,7 +51,7 @@ class ErrorBoundary extends React.Component {
             <h1>Oops! Something went wrong</h1>
             <p>We apologize for the inconvenience. The app encountered an unexpected error.</p>
 
-            {process.env.NODE_ENV === 'development' && (
+            {import.meta.env.MODE === 'development' && (
               <details className="error-details" style={{ whiteSpace: 'pre-wrap' }}>
                 <summary>Error details (Development only)</summary>
                 <div className="error-stack">

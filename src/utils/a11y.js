@@ -133,8 +133,10 @@ export const hasGoodContrast = (color1, color2, level = 'AA') => {
  * Custom hook for managing keyboard shortcuts
  * @param {Object} shortcuts - Object mapping key combinations to handlers
  */
+import { useEffect } from 'react';
+
 export const useKeyboardShortcuts = (shortcuts) => {
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (e) => {
       const key = `${e.ctrlKey || e.metaKey ? 'Ctrl+' : ''}${
         e.shiftKey ? 'Shift+' : ''
