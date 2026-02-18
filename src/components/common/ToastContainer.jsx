@@ -5,15 +5,27 @@ export default function ToastContainer() {
 
   if (toasts.length === 0) return null;
 
+  const getAriaLive = (toastType) => {
+    return toastType === "error" ? "assertive" : "polite";
+  };
+
   return (
-    <div className="toast-container">
+    <div
+      className="toast-container"
+      role="region"
+      aria-label="Notifications"
+      aria-live="polite"
+      aria-atomic="false"
+    >
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={`toast toast--${toast.type}`}
-          onClick={() => removeToast(toast.id)}
+          role="alert"
+          aria-live={getAriaLive(toast.type)}
+          aria-atomic="true"
         >
-          <div className="toast__icon">
+          <div className="toast__icon" aria-hidden="true">
             {toast.type === "success" && "✓"}
             {toast.type === "error" && "✗"}
             {toast.type === "warning" && "⚠"}
@@ -21,14 +33,15 @@ export default function ToastContainer() {
           </div>
           <div className="toast__message">{toast.message}</div>
           <button
+            type="button"
             className="toast__close"
             onClick={(e) => {
               e.stopPropagation();
               removeToast(toast.id);
             }}
-            aria-label="Close notification"
+            aria-label={`Dismiss ${toast.type} notification: ${toast.message}`}
           >
-            ×
+            <span aria-hidden="true">×</span>
           </button>
         </div>
       ))}

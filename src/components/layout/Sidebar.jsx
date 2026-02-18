@@ -24,19 +24,23 @@ export default function Sidebar({ currentPage, onNavigate }) {
   const isActive = (page) => (currentPage === page ? "active" : "");
 
   return (
-    <aside className="sidebar">
-      <nav className="sidebar__nav">
+    <aside className="sidebar" aria-label="Navigation">
+      <nav className="sidebar__nav" aria-label="Main navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
+          const isItemActive = currentPage === item.id;
 
           return (
             <button
               key={item.id}
               className={`sidebar__link ${isActive(item.id)}`}
               onClick={() => onNavigate(item.id)}
+              aria-current={isItemActive ? "page" : undefined}
+              aria-label={`${item.label}${isItemActive ? " (current page)" : ""}`}
+              type="button"
             >
               <Icon className="sidebar__icon" aria-hidden="true" />
-              {item.label}
+              <span className="sidebar__label">{item.label}</span>
             </button>
           );
         })}

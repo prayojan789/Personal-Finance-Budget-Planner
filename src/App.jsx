@@ -19,15 +19,20 @@ function App() {
 
   return (
     <div className="app">
+      {/* Skip to main content link for keyboard navigation */}
+      <a href="#main-content" className="skip-to-main-content">
+        Skip to main content
+      </a>
+
       <Navbar />
-      <d className="app__body">
+      <div className="app__body">
         <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
-        <main className="app__main">
+        <main className="app__main" id="main-content" role="main">
           <Suspense fallback={<Loader label="Loading page..." />}>
             <AppRoutes currentPage={currentPage} onNavigate={setCurrentPage} />
           </Suspense>
         </main>
-      </d iv>
+      </div>
       <Footer />
       <ToastContainer />
     </div>

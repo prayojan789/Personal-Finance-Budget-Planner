@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Sora:wght@300;400;600;700&display=swap");
+@import "./assets/styles/a11y.css";
 
 :root {
   font-family: "Sora", "Segoe UI", sans-serif;
