@@ -22,6 +22,12 @@
   --shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
 }
 
+:root.theme-transition,
+:root.theme-transition * {
+  transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease,
+    box-shadow 220ms ease, fill 220ms ease, stroke 220ms ease;
+}
+
 :root[data-theme="dark"] {
   color: #e7ecec;
   background-color: #0b1116;

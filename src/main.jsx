@@ -6,17 +6,20 @@ import { FinanceProvider } from "./context/FinanceContext.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ToastProvider } from "./context/ToastContext.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ErrorBoundary>
-      <AuthProvider>
-        <FinanceProvider>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
-        </FinanceProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <FinanceProvider>
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          </FinanceProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   </StrictMode>
 );

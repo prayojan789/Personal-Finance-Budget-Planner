@@ -4,10 +4,11 @@ import { useToast } from "../../context/toastCore.js";
 import Button from "../../components/common/Button.jsx";
 import BackupRestore from "../../components/BackupRestore.jsx";
 import { exportToCSV, importFromCSV } from "../../services/csvService.js";
+import { useTheme } from "../../context/ThemeContext.jsx";
 
 const timezones = ["local", "UTC", "America/New_York", "Europe/London", "Asia/Tokyo", "Asia/Kathmandu"];
 const currencies = ["NPR", "USD", "EUR", "GBP", "JPY", "CAD", "AUD", "INR"];
-const themes = ["light", "dark"];
+const themes = ["system", "light", "dark"];
 
 export default function SettingsPanel() {
   const {
@@ -23,9 +24,13 @@ export default function SettingsPanel() {
   } = useFinance();
   const toast = useToast();
   const fileInputRef = useRef(null);
+  const { theme, setTheme, resolvedTheme, isSystem } = useTheme();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    if (name === "theme") {
+      setTheme(value);
+    }
     updateSettings({ [name]: value });
   };
 
@@ -117,7 +122,7 @@ export default function SettingsPanel() {
           </label>
           <label className="field">
             <span className="field__label">Theme</span>
-            <select name="theme" value={settings.theme || "light"} onChange={handleChange}>
+            <select name="theme" value={theme} onChange={handleChange}>
               {themes.map((theme) => (
                 <option key={theme} value={theme}>
                   {theme[0].toUpperCase() + theme.slice(1)}
@@ -125,6 +130,11 @@ export default function SettingsPanel() {
               ))}
             </select>
           </label>
+          {isSystem && (
+            <div className="settings-note">
+              <p className="muted">System theme detected: {resolvedTheme}.</p>
+            </div>
+          )}
           <div className="settings-note">
             <p className="muted">
               Timezone is used for date grouping and reports. Currency updates apply instantly.
