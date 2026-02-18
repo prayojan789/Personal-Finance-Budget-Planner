@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFinance } from "../../../context/FinanceContext.jsx";
 import { useToast } from "../../../context/toastCore.js";
 import Button from "../../../components/common/Button.jsx";
@@ -18,6 +18,16 @@ export default function TransactionForm() {
   const toast = useToast();
   const [form, setForm] = useState(defaultForm);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const handleFocus = () => {
+      const input = document.getElementById("transaction-description");
+      if (input) input.focus();
+    };
+
+    window.addEventListener("focus-transaction-form", handleFocus);
+    return () => window.removeEventListener("focus-transaction-form", handleFocus);
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -49,6 +59,7 @@ export default function TransactionForm() {
         <div className="form__row">
           <Input
             label="Description"
+            id="transaction-description"
             name="description"
             value={form.description}
             onChange={handleChange}

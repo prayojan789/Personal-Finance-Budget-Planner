@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FixedSizeList as List } from "react-window";
 import { useFinance } from "../../../context/FinanceContext.jsx";
 import TransactionItem from "./TransactionItem.jsx";
@@ -17,6 +17,16 @@ export default function TransactionList() {
   });
   const [sort, setSort] = useState("newest");
   const debouncedSearch = useDebouncedValue(filters.search, 250);
+
+  useEffect(() => {
+    const handlePaletteSearch = (event) => {
+      const nextQuery = event.detail?.query ?? "";
+      setFilters((prev) => ({ ...prev, search: nextQuery }));
+    };
+
+    window.addEventListener("command-palette-search", handlePaletteSearch);
+    return () => window.removeEventListener("command-palette-search", handlePaletteSearch);
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;

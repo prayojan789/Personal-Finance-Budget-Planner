@@ -6,6 +6,7 @@ import Sidebar from "./components/layout/Sidebar.jsx";
 import AppRoutes from "./routes/AppRoutes.jsx";
 import ToastContainer from "./components/common/ToastContainer.jsx";
 import Loader from "./components/common/Loader.jsx";
+import CommandPalette from "./components/common/CommandPalette.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -28,6 +29,7 @@ function App() {
       </div>
       <Footer />
       <ToastContainer />
+      <CommandPalette currentPage={currentPage} onNavigate={setCurrentPage} />
     </div>
   );
 }
