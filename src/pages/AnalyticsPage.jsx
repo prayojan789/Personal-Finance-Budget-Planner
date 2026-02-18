@@ -9,6 +9,13 @@ const formatMonth = (value) => {
   return date.toLocaleString(undefined, { month: "short", year: "numeric" });
 };
 
+const getMonthKey = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  return `${date.getFullYear()}-${month}`;
+};
+
 export default function AnalyticsPage() {
   const {
     monthlySummary,
@@ -28,12 +35,104 @@ export default function AnalyticsPage() {
 
   const last6Months = useMemo(() => monthlySummary.slice(-6), [monthlySummary]);
 
+  const currentMonthKey = useMemo(() => getMonthKey(new Date()), []);
+  const currentMonthData = useMemo(
+    () => monthlySummary.find((month) => month.month === currentMonthKey),
+    [monthlySummary, currentMonthKey]
+  );
+  const averageDailyExpense = useMemo(() => {
+    const daysElapsed = Math.max(new Date().getDate(), 1);
+    const expenses = currentMonthData?.expenses || 0;
+    return expenses / daysElapsed;
+  }, [currentMonthData]);
+
+  const topCategory = spendingHabits[0];
+  const expenseTrendPercent = monthComparison?.expenseChangePercent ?? null;
+  const expenseTrendDirection = expenseTrendPercent !== null && expenseTrendPercent < 0 ? "down" : "up";
+  const expenseTrendArrow = expenseTrendPercent === null ? "–" : expenseTrendPercent < 0 ? "↓" : "↑";
+  const expenseTrendValue =
+    expenseTrendPercent === null ? "N/A" : `${Math.abs(expenseTrendPercent).toFixed(1)}%`;
+  const savingsTrendDirection = savingsRate < 0 ? "down" : "up";
+  const savingsTrendArrow = savingsRate < 0 ? "↓" : "↑";
+  const hasForecast = Boolean(spendingForecast);
+  const forecastTrendArrow = hasForecast
+    ? spendingForecast.trend === "increasing"
+      ? "↑"
+      : "↓"
+    : "–";
+  const forecastTrendDirection = hasForecast
+    ? spendingForecast.trend === "increasing"
+      ? "up"
+      : "down"
+    : "up";
+
   return (
     <div className="page">
       <div className="page__header">
         <h1>Advanced Analytics</h1>
         <p>Deep insights into your spending patterns and financial health.</p>
       </div>
+
+      <section className="panel insights-panel">
+        <div className="insights-panel__header">
+          <h2>Insights Panel</h2>
+          <p className="muted">Fast signals from this month and recent trends.</p>
+        </div>
+        <div className="insights-panel__grid">
+          <article className="insights-panel__card">
+            <p className="insights-panel__label">Monthly Comparison</p>
+            <div className={`trend-indicator trend-indicator--${expenseTrendDirection}`}>
+              <span className="trend-indicator__arrow" aria-hidden="true">{expenseTrendArrow}</span>
+              <span className="trend-indicator__value">{expenseTrendValue}</span>
+            </div>
+            <p className="insights-panel__meta">
+              {monthComparison
+                ? `${formatMonth(monthComparison.previousMonth)} → ${formatMonth(monthComparison.currentMonth)}`
+                : "Not enough data yet"}
+            </p>
+          </article>
+
+          <article className="insights-panel__card">
+            <p className="insights-panel__label">Top Spending Category</p>
+            <strong className="insights-panel__value">
+              {topCategory ? topCategory.category : "N/A"}
+            </strong>
+            <p className="insights-panel__meta">
+              {topCategory
+                ? `${formatCurrency(topCategory.amount, settings.currency)} (${topCategory.percentage.toFixed(1)}%)`
+                : "No expenses recorded"}
+            </p>
+          </article>
+
+          <article className="insights-panel__card">
+            <p className="insights-panel__label">Savings Rate</p>
+            <div className={`trend-indicator trend-indicator--${savingsTrendDirection}`}>
+              <span className="trend-indicator__arrow" aria-hidden="true">{savingsTrendArrow}</span>
+              <span className="trend-indicator__value">{Math.abs(savingsRate)}%</span>
+            </div>
+            <p className="insights-panel__meta">Trailing 12 months</p>
+          </article>
+
+          <article className="insights-panel__card">
+            <p className="insights-panel__label">Average Daily Expense</p>
+            <strong className="insights-panel__value">
+              {formatCurrency(averageDailyExpense, settings.currency)}
+            </strong>
+            <p className="insights-panel__meta">This month so far</p>
+          </article>
+
+          <article className="insights-panel__card">
+            <p className="insights-panel__label">Spending Trend</p>
+            <div className={`trend-indicator trend-indicator--${forecastTrendDirection}`}>
+              <span className="trend-indicator__arrow" aria-hidden="true">{forecastTrendArrow}</span>
+              <span className="trend-indicator__value">
+                {spendingForecast ? spendingForecast.trend : "N/A"}
+              </span>
+            </div>
+            <p className="insights-panel__meta">Next month forecast</p>
+          </article>
+        </div>
+      </section>
 
       {/* Key Metrics */}
       <div className="analytics-grid metrics-grid">
