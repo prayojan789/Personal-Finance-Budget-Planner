@@ -20,14 +20,14 @@ function App() {
   return (
     <div className="app">
       <Navbar />
-      <div className="app__body">
+      <d className="app__body">
         <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
         <main className="app__main">
           <Suspense fallback={<Loader label="Loading page..." />}>
             <AppRoutes currentPage={currentPage} onNavigate={setCurrentPage} />
           </Suspense>
         </main>
-      </div>
+      </d iv>
       <Footer />
       <ToastContainer />
     </div>

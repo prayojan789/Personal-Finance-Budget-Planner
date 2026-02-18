@@ -417,7 +417,7 @@ export default function GoalsPage() {
             <p className="empty">No goals set yet. Create one in the Budgets section.</p>
           </section>
         )}
-      </div>
+         </div>
     </div>
   );
 }
