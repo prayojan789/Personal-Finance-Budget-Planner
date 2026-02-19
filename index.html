@@ -2,12 +2,53 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>personal-finance-budget-planner</title>
+    <meta name="description" content="A modern, feature-rich budget and expense planning application with offline support, charts, and smart insights." />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Budget Planner" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- App Icons -->
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="icon" type="image/png" href="/icon-512.png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Splash Screens for iOS -->
+    <link rel="apple-touch-startup-image" href="/splash-192.png" sizes="192x192" />
+    <link rel="apple-touch-startup-image" href="/splash-512.png" sizes="512x512" />
+    
+    <title>Personal Finance Budget Planner</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            const registration = await navigator.serviceWorker.register('/sw.js', {
+              scope: '/',
+            });
+            console.log('Service Worker registered:', registration);
+          } catch (error) {
+            console.error('Service Worker registration failed:', error);
+          }
+        });
+
+        // Handle service worker updates
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        });
+      }
+    </script>
   </body>
 </html>
