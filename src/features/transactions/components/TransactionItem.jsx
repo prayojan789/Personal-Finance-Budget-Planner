@@ -25,7 +25,7 @@ function TransactionItem({ transaction }) {
   });
 
   const handleChange = (event) => {
-    const { na   me, value } = event.target;
+    const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 

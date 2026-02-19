@@ -316,8 +316,11 @@ export function FinanceProvider({ children }) {
 
   const transactions = data.transactions;
   const budgets = data.budgets;
-  const goals = data.goals || [];
-  const recurringTransactions = data.recurringTransactions || [];
+  const goals = useMemo(() => data.goals || [], [data.goals]);
+  const recurringTransactions = useMemo(
+    () => data.recurringTransactions || [],
+    [data.recurringTransactions]
+  );
   const settings = data.settings;
 
   const totals = transactions.reduce(
@@ -488,72 +491,39 @@ export function FinanceProvider({ children }) {
     return Object.values(habits).sort((a, b) => b.amount - a.amount);
   }, [categoryTotals]);
 
-  const value = useMemo(
-    () => ({
-      transactions,
-      budgets,
-      goals,
-      settings,
-      totals,
-      monthlySummary: monthlySummaryArray,
-      categoryTotals,
-      budgetsWithSpend,
-      alerts,
-      categories: defaultCategories,
-      recurringTransactions,
-      // Advanced analytics
-      monthComparison,
-      categoryTrends,
-      spendingForecast,
-      savingsRate,
-      spendingHabits,
-      addTransaction,
-      updateTransaction,
-      deleteTransaction,
-      addRecurring,
-      updateRecurring,
-      deleteRecurring,
-      addBudget,
-      updateBudget,
-      deleteBudget,
-      addGoal,
-      updateGoal,
-      deleteGoal,
-      resetData,
-      updateSettings,
-    }),
-    [
-      transactions,
-      budgets,
-      goals,
-      settings,
-      totals,
-      monthlySummaryArray,
-      categoryTotals,
-      budgetsWithSpend,
-      alerts,
-      recurringTransactions,
-      monthComparison,
-      categoryTrends,
-      spendingForecast,
-      savingsRate,
-      spendingHabits,
-      addTransaction,
-      updateTransaction,
-      deleteTransaction,
-      addRecurring,
-      updateRecurring,
-      deleteRecurring,
-      addBudget,
-      updateBudget,
-      deleteBudget,
-      addGoal,
-      updateGoal,
-      deleteGoal,
-      resetData,
-      updateSettings,
-    ]
-  );
+  const value = {
+    transactions,
+    budgets,
+    goals,
+    settings,
+    totals,
+    monthlySummary: monthlySummaryArray,
+    categoryTotals,
+    budgetsWithSpend,
+    alerts,
+    categories: defaultCategories,
+    recurringTransactions,
+    // Advanced analytics
+    monthComparison,
+    categoryTrends,
+    spendingForecast,
+    savingsRate,
+    spendingHabits,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    addRecurring,
+    updateRecurring,
+    deleteRecurring,
+    addBudget,
+    updateBudget,
+    deleteBudget,
+    addGoal,
+    updateGoal,
+    deleteGoal,
+    resetData,
+    updateSettings,
+  };
 
   return <FinanceContext.Provider value={value}>{children}</FinanceContext.Provider>;
 }

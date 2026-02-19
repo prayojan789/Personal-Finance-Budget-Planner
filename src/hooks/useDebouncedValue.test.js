@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
 import useDebouncedValue from '../hooks/useDebouncedValue';
 
 describe('useDebouncedValue', () => {
@@ -7,12 +7,17 @@ describe('useDebouncedValue', () => {
     vi.useFakeTimers();
   });
 
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
   it('should return initial value immediately', () => {
     const { result } = renderHook(() => useDebouncedValue('initial', 300));
     expect(result.current).toBe('initial');
   });
 
-  it('should debounce value changes', async () => {
+  it('should debounce value changes', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebouncedValue(value, delay),
       { initialProps: { value: 'initial', delay: 300 } }
@@ -29,12 +34,10 @@ describe('useDebouncedValue', () => {
       vi.advanceTimersByTime(300);
     });
 
-    await waitFor(() => {
-      expect(result.current).toBe('updated');
-    });
+    expect(result.current).toBe('updated');
   });
 
-  it('should cancel previous timeout on new change', async () => {
+  it('should cancel previous timeout on new change', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebouncedValue(value, delay),
       { initialProps: { value: 'initial', delay: 300 } }
@@ -58,12 +61,10 @@ describe('useDebouncedValue', () => {
       vi.advanceTimersByTime(200);
     });
 
-    await waitFor(() => {
-      expect(result.current).toBe('second');
-    });
+    expect(result.current).toBe('second');
   });
 
-  it('should support custom delays', async () => {
+  it('should support custom delays', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebouncedValue(value, delay),
       { initialProps: { value: 'initial', delay: 500 } }
@@ -80,12 +81,10 @@ describe('useDebouncedValue', () => {
       vi.advanceTimersByTime(200);
     });
 
-    await waitFor(() => {
-      expect(result.current).toBe('updated');
-    });
+    expect(result.current).toBe('updated');
   });
 
-  it('should handle rapid changes', async () => {
+  it('should handle rapid changes', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebouncedValue(value, delay),
       { initialProps: { value: 'v1', delay: 300 } }
@@ -101,12 +100,10 @@ describe('useDebouncedValue', () => {
       vi.advanceTimersByTime(300);
     });
 
-    await waitFor(() => {
-      expect(result.current).toBe('v5'); // Only final value
-    });
+    expect(result.current).toBe('v5'); // Only final value
   });
 
-  it('should work with different value types', async () => {
+  it('should work with different value types', () => {
     // Test with object
     const obj = { key: 'value' };
     const { result, rerender } = renderHook(
@@ -121,8 +118,6 @@ describe('useDebouncedValue', () => {
       vi.advanceTimersByTime(300);
     });
 
-    await waitFor(() => {
-      expect(result.current).toBe(newObj);
-    });
+    expect(result.current).toBe(newObj);
   });
 });

@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 
 export default function Modal({ open, title, children, onClose }) {
   const modalRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
+  const modalTitleId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -74,8 +75,6 @@ export default function Modal({ open, title, children, onClose }) {
   }, [open, onClose]);
 
   if (!open) return null;
-
-  const modalTitleId = `modal-title-${Date.now()}`;
 
   return (
     <div className="modal">

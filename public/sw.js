@@ -85,7 +85,7 @@ async function networkFirst(request) {
       cache.put(request, response.clone());
     }
     return response;
-  } catch (error) {
+  } catch {
     console.log('Network request failed, trying cache:', request.url);
     const cached = await caches.match(request);
     if (cached) {
@@ -124,7 +124,7 @@ async function cacheImage(request) {
       cache.put(request, response.clone());
     }
     return response;
-  } catch (error) {
+  } catch {
     console.log('Failed to fetch image:', request.url);
     // Return a placeholder or cached version
     return caches.match(request);

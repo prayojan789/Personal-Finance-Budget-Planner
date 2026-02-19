@@ -1,22 +1,18 @@
 import { useState, useCallback, useEffect } from 'react';
-import Button from '../Button';
 
 const InstallPWA = () => {
   const [canInstall, setCanInstall] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setCanInstall(true);
-      setShowPrompt(true);
     };
 
     const handleAppInstalled = () => {
       setCanInstall(false);
       setIsInstalled(true);
-      setShowPrompt(false);
     };
 
     const checkIfInstalled = () => {
@@ -44,7 +40,6 @@ const InstallPWA = () => {
     
     if (outcome === 'accepted') {
       setCanInstall(false);
-      setShowPrompt(false);
     }
   }, []);
 

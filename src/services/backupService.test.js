@@ -92,7 +92,8 @@ describe('backupService', () => {
   describe('downloadBackup', () => {
     it('should create and trigger download', () => {
       localStorage.getItem.mockReturnValue(null);
-      const mockLink = { click: vi.fn() };
+      const mockLink = document.createElement('a');
+      const clickSpy = vi.spyOn(mockLink, 'click').mockImplementation(() => {});
       vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
       vi.spyOn(document.body, 'appendChild');
       vi.spyOn(document.body, 'removeChild');
@@ -100,12 +101,13 @@ describe('backupService', () => {
       const result = downloadBackup();
 
       expect(result).toBe(true);
-      expect(mockLink.click).toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
     });
 
     it('should generate filename with timestamp if not provided', () => {
       localStorage.getItem.mockReturnValue(null);
-      const mockLink = { click: vi.fn() };
+      const mockLink = document.createElement('a');
+      vi.spyOn(mockLink, 'click').mockImplementation(() => {});
       vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
       vi.spyOn(document.body, 'appendChild');
       vi.spyOn(document.body, 'removeChild');
@@ -117,7 +119,8 @@ describe('backupService', () => {
 
     it('should use provided filename', () => {
       localStorage.getItem.mockReturnValue(null);
-      const mockLink = { click: vi.fn() };
+      const mockLink = document.createElement('a');
+      vi.spyOn(mockLink, 'click').mockImplementation(() => {});
       vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
       vi.spyOn(document.body, 'appendChild');
       vi.spyOn(document.body, 'removeChild');
@@ -129,7 +132,7 @@ describe('backupService', () => {
   });
 
   describe('restoreFromBackup', () => {
-    it('should parse and validate backup file', async () => {
+    it('should parse and validate backup object', () => {
       const backupData = {
         version: '1.0.0',
         timestamp: new Date().toISOString(),
@@ -141,20 +144,18 @@ describe('backupService', () => {
         },
       };
 
-      const mockFile = new File([JSON.stringify(backupData)], 'backup.json');
-      const result = await restoreFromBackup(mockFile);
+      const result = restoreFromBackup(backupData);
 
       expect(result.success).toBe(true);
       expect(result.stats).toBeDefined();
     });
 
-    it('should reject invalid backup format', async () => {
-      const mockFile = new File(['invalid json'], 'backup.json');
-
-      await expect(restoreFromBackup(mockFile)).rejects.toThrow();
+    it('should return failure for invalid backup format', () => {
+      const result = restoreFromBackup({});
+      expect(result.success).toBe(false);
     });
 
-    it('should restore data to localStorage', async () => {
+    it('should restore data to localStorage', () => {
       const backupData = {
         version: '1.0.0',
         timestamp: new Date().toISOString(),
@@ -166,8 +167,7 @@ describe('backupService', () => {
         },
       };
 
-      const mockFile = new File([JSON.stringify(backupData)], 'backup.json');
-      await restoreFromBackup(mockFile);
+      restoreFromBackup(backupData);
 
       expect(localStorage.setItem).toHaveBeenCalledWith(
         'transactions',
