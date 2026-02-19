@@ -136,6 +136,8 @@ function TransactionItem({ transaction }) {
 						<strong>{transaction.description || "Untitled"}</strong>
 						<div className="transaction-meta">
 							{transaction.category || "Other"} • {formatDate(transaction.date)}
+							{transaction.isRecurring ? " • Recurring" : ""}
+							{transaction.isSubscription ? " • Subscription" : ""}
 						</div>
 					</div>
 					<div className="transaction-actions">

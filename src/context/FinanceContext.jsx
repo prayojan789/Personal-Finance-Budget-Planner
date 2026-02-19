@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useCallback, useContext, useMemo } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo } from "react";
 import useLocalStorage from "../hooks/useLocalStorage.js";
 
 const FinanceContext = createContext(null);
@@ -8,6 +8,7 @@ const defaultData = {
   transactions: [],
   budgets: [],
   goals: [],
+  recurringTransactions: [],
   settings: {
     currency: "NPR",
     timezone: "Asia/Kathmandu",
@@ -23,6 +24,7 @@ const defaultCategories = [
   "Health",
   "Savings",
   "Entertainment",
+  "Subscriptions",
   "Income",
   "Other",
 ];
@@ -31,6 +33,121 @@ const createId = () =>
   typeof crypto !== "undefined" && crypto.randomUUID
     ? crypto.randomUUID()
     : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+const toDateOnly = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  date.setHours(0, 0, 0, 0);
+  return date;
+};
+
+const toDateString = (date) => date.toISOString().slice(0, 10);
+
+const addByFrequency = (date, frequency) => {
+  const next = new Date(date);
+  switch (frequency) {
+    case "daily":
+      next.setDate(next.getDate() + 1);
+      break;
+    case "weekly":
+      next.setDate(next.getDate() + 7);
+      break;
+    case "biweekly":
+      next.setDate(next.getDate() + 14);
+      break;
+    case "yearly":
+      next.setFullYear(next.getFullYear() + 1);
+      break;
+    case "monthly":
+    default:
+      next.setMonth(next.getMonth() + 1);
+      break;
+  }
+  return next;
+};
+
+const applyRecurringTransactions = (data) => {
+  const recurring = data.recurringTransactions || [];
+  if (recurring.length === 0) return data;
+
+  const today = toDateOnly(new Date());
+  if (!today) return data;
+
+  const existingKeys = new Set(
+    data.transactions
+      .filter((transaction) => transaction.recurringId && transaction.date)
+      .map((transaction) => `${transaction.recurringId}|${transaction.date}`)
+  );
+
+  let updatedTransactions = data.transactions;
+  let updatedRecurring = recurring;
+  let transactionsChanged = false;
+  let recurringChanged = false;
+
+  updatedRecurring = recurring.map((rule) => {
+    if (rule.active === false) return rule;
+    const baseDate = rule.startDate || rule.nextRun || rule.date;
+    const nextRun = rule.nextRun || baseDate;
+    if (!nextRun) return rule;
+
+    let nextDate = toDateOnly(nextRun);
+    if (!nextDate) return rule;
+
+    let lastRun = rule.lastRun || null;
+    let localChanged = false;
+
+    while (nextDate <= today) {
+      const dateStr = toDateString(nextDate);
+      const key = `${rule.id}|${dateStr}`;
+
+      if (!existingKeys.has(key)) {
+        const nextTransaction = {
+          id: createId(),
+          description: rule.description,
+          amount: Number(rule.amount || 0),
+          type: rule.type || "expense",
+          category: rule.category || "Other",
+          date: dateStr,
+          note: rule.note || "",
+          isRecurring: true,
+          recurringId: rule.id,
+          isSubscription: Boolean(rule.isSubscription),
+        };
+
+        if (updatedTransactions === data.transactions) {
+          updatedTransactions = [...data.transactions];
+        }
+
+        updatedTransactions.unshift(nextTransaction);
+        existingKeys.add(key);
+        transactionsChanged = true;
+      }
+
+      lastRun = dateStr;
+      nextDate = addByFrequency(nextDate, rule.frequency);
+      localChanged = true;
+    }
+
+    if (localChanged) {
+      recurringChanged = true;
+      return {
+        ...rule,
+        lastRun,
+        nextRun: toDateString(nextDate),
+      };
+    }
+
+    return rule;
+  });
+
+  if (!transactionsChanged && !recurringChanged) return data;
+
+  return {
+    ...data,
+    transactions: updatedTransactions,
+    recurringTransactions: updatedRecurring,
+  };
+};
 
 const getMonthKey = (value) => {
   const date = new Date(value);
@@ -50,6 +167,10 @@ export function FinanceProvider({ children }) {
     }));
   }
 
+  useEffect(() => {
+    setData((prev) => applyRecurringTransactions(prev));
+  }, [setData]);
+
   const addTransaction = useCallback((transaction) => {
     const next = {
       ...transaction,
@@ -58,6 +179,47 @@ export function FinanceProvider({ children }) {
     setData((prev) => ({
       ...prev,
       transactions: [next, ...prev.transactions],
+    }));
+  }, [setData]);
+
+  const addRecurring = useCallback((recurring, options = {}) => {
+    const createFirst = options.createFirst !== false;
+    const startDate = recurring.startDate || recurring.date || new Date().toISOString().slice(0, 10);
+    const next = {
+      ...recurring,
+      id: createId(),
+      amount: Number(recurring.amount || 0),
+      startDate,
+      nextRun: recurring.nextRun || startDate,
+      frequency: recurring.frequency || "monthly",
+      active: recurring.active !== false,
+    };
+
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        recurringTransactions: [next, ...(prev.recurringTransactions || [])],
+      };
+      return createFirst ? applyRecurringTransactions(updated) : updated;
+    });
+  }, [setData]);
+
+  const updateRecurring = useCallback((id, updates) => {
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        recurringTransactions: (prev.recurringTransactions || []).map((rule) =>
+          rule.id === id ? { ...rule, ...updates } : rule
+        ),
+      };
+      return applyRecurringTransactions(updated);
+    });
+  }, [setData]);
+
+  const deleteRecurring = useCallback((id) => {
+    setData((prev) => ({
+      ...prev,
+      recurringTransactions: (prev.recurringTransactions || []).filter((rule) => rule.id !== id),
     }));
   }, [setData]);
 
@@ -155,6 +317,7 @@ export function FinanceProvider({ children }) {
   const transactions = data.transactions;
   const budgets = data.budgets;
   const goals = data.goals || [];
+  const recurringTransactions = data.recurringTransactions || [];
   const settings = data.settings;
 
   const totals = transactions.reduce(
@@ -337,6 +500,7 @@ export function FinanceProvider({ children }) {
       budgetsWithSpend,
       alerts,
       categories: defaultCategories,
+      recurringTransactions,
       // Advanced analytics
       monthComparison,
       categoryTrends,
@@ -346,6 +510,9 @@ export function FinanceProvider({ children }) {
       addTransaction,
       updateTransaction,
       deleteTransaction,
+      addRecurring,
+      updateRecurring,
+      deleteRecurring,
       addBudget,
       updateBudget,
       deleteBudget,
@@ -365,6 +532,7 @@ export function FinanceProvider({ children }) {
       categoryTotals,
       budgetsWithSpend,
       alerts,
+      recurringTransactions,
       monthComparison,
       categoryTrends,
       spendingForecast,
@@ -373,6 +541,9 @@ export function FinanceProvider({ children }) {
       addTransaction,
       updateTransaction,
       deleteTransaction,
+      addRecurring,
+      updateRecurring,
+      deleteRecurring,
       addBudget,
       updateBudget,
       deleteBudget,

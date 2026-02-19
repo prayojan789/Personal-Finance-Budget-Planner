@@ -11,10 +11,13 @@ const defaultForm = {
   category: "Food",
   date: new Date().toISOString().slice(0, 10),
   note: "",
+  isRecurring: false,
+  frequency: "monthly",
+  isSubscription: false,
 };
 
 export default function TransactionForm() {
-  const { addTransaction, categories } = useFinance();
+  const { addTransaction, addRecurring, categories } = useFinance();
   const toast = useToast();
   const [form, setForm] = useState(defaultForm);
   const [error, setError] = useState("");
@@ -30,8 +33,11 @@ export default function TransactionForm() {
   }, []);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = event.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSubmit = (event) => {
@@ -40,11 +46,25 @@ export default function TransactionForm() {
       setError("Add a description and  amount.");
       return;
     }
-    addTransaction({
-      ...form,
-      amount: Number(form.amount),
-    });
-    toast.success("Transaction added successfully!");
+    if (form.isRecurring) {
+      addRecurring({
+        description: form.description,
+        amount: Number(form.amount),
+        type: form.type,
+        category: form.category,
+        note: form.note,
+        startDate: form.date,
+        frequency: form.frequency,
+        isSubscription: form.isSubscription,
+      });
+      toast.success("Recurring transaction saved!");
+    } else {
+      addTransaction({
+        ...form,
+        amount: Number(form.amount),
+      });
+      toast.success("Transaction added successfully!");
+    }
     setForm(defaultForm);
     setError("");
   };
@@ -109,6 +129,40 @@ export default function TransactionForm() {
             onChange={handleChange}
             placeholder="Optional note"
           />
+        </div>
+        <div className="form__row">
+          <label className="field field--checkbox">
+            <input
+              type="checkbox"
+              name="isRecurring"
+              checked={form.isRecurring}
+              onChange={handleChange}
+            />
+            <span className="field__label">Recurring</span>
+          </label>
+          {form.isRecurring && (
+            <label className="field">
+              <span className="field__label">Frequency</span>
+              <select name="frequency" value={form.frequency} onChange={handleChange}>
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-weekly</option>
+                <option value="yearly">Yearly</option>
+                <option value="daily">Daily</option>
+              </select>
+            </label>
+          )}
+          {form.isRecurring && (
+            <label className="field field--checkbox">
+              <input
+                type="checkbox"
+                name="isSubscription"
+                checked={form.isSubscription}
+                onChange={handleChange}
+              />
+              <span className="field__label">Subscription</span>
+            </label>
+          )}
         </div>
         {error ? <p className="form__error">{error}</p> : null}
         <Button className="btn--primary" type="submit">

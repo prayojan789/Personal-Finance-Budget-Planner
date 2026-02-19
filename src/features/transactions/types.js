@@ -7,6 +7,9 @@
  * @property {string} category
  * @property {string} date
  * @property {string} [note]
+ * @property {boolean} [isRecurring]
+ * @property {string} [recurringId]
+ * @property {boolean} [isSubscription]
  */
 
 export const transactionTypes = ["expense", "income"];
