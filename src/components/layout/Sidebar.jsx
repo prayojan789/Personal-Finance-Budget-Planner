@@ -6,12 +6,14 @@ import {
   LightBulbIcon,
   ChartBarIcon,
   DocumentChartBarIcon,
+  CalendarIcon,
   Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: ChartPieIcon },
   { id: "transactions", label: "Transactions", icon: ArrowsRightLeftIcon },
+  { id: "calendar", label: "Calendar", icon: CalendarIcon },
   { id: "budgets", label: "Budgets", icon: WalletIcon },
   { id: "goals", label: "Goals", icon: TrophyIcon },
   { id: "insights", label: "Insights", icon: LightBulbIcon },

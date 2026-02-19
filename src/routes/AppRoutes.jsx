@@ -3,6 +3,7 @@ import { lazy } from "react";
 const DashboardPage = lazy(() => import("../pages/DashboardPage.jsx"));
 const BudgetsPage = lazy(() => import("../pages/BudgetsPage.jsx"));
 const TransactionsPage = lazy(() => import("../pages/TransactionsPage.jsx"));
+const CalendarPage = lazy(() => import("../pages/CalendarPage.jsx"));
 const ReportsPage = lazy(() => import("../pages/ReportsPage.jsx"));
 const SettingsPage = lazy(() => import("../pages/SettingsPage.jsx"));
 const InsightsPage = lazy(() => import("../pages/InsightsPage.jsx"));
@@ -15,6 +16,7 @@ export default function AppRoutes({ currentPage, onNavigate }) {
     home: <HomePage onNavigate={onNavigate} />,
     dashboard: <DashboardPage />,
     transactions: <TransactionsPage />,
+    calendar: <CalendarPage />,
     budgets: <BudgetsPage />,
     goals: <GoalsPage />,
     insights: <InsightsPage />,

@@ -7,6 +7,7 @@ const navItems = [
   { id: "home", label: "Home" },
   { id: "dashboard", label: "Dashboard" },
   { id: "transactions", label: "Transactions" },
+  { id: "calendar", label: "Calendar" },
   { id: "budgets", label: "Budgets" },
   { id: "goals", label: "Goals" },
   { id: "insights", label: "Insights" },
