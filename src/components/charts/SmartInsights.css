@@ -1,0 +1,363 @@
+/* Smart Insights Component Styles */
+
+.smart-insights-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.insights-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Anomaly Detection Section */
+
+.anomalies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anomaly-item {
+  background: linear-gradient(135deg, #fef2f2 0%, #fef9f9 100%);
+  border-left: 4px solid #ef4444;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.anomaly-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.anomaly-category {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.anomaly-severity {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.anomaly-message {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.anomaly-details {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.detail-badge {
+  background: #fecaca;
+  color: #7f1d1d;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.detail-date {
+  color: #9ca3af;
+}
+
+.more-items {
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+/* Insights Section */
+
+.insights-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.insight-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.insight-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+.insight-card.insight-highest-spending {
+  border-left: 4px solid #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #f9fafb 100%);
+}
+
+.insight-card.insight-spending-trend {
+  border-left: 4px solid #8b5cf6;
+  background: linear-gradient(135deg, #faf5ff 0%, #f9fafb 100%);
+}
+
+.insight-card.insight-top-merchants {
+  border-left: 4px solid #ec4899;
+  background: linear-gradient(135deg, #fdf2f8 0%, #f9fafb 100%);
+}
+
+.insight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.insight-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.severity-badge.severity-info {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.severity-badge.severity-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.severity-badge.severity-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.insight-message {
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Suggestions Section */
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.suggestion-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #f9fafb 100%);
+}
+
+.suggestion-item.suggestion-high {
+  border-left-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #f9fafb 100%);
+}
+
+.suggestion-item.suggestion-medium {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, #fffbf0 0%, #f9fafb 100%);
+}
+
+.suggestion-item.suggestion-low {
+  border-left-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #f9fafb 100%);
+}
+
+.suggestion-icon {
+  font-size: 20px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.suggestion-content {
+  flex: 1;
+}
+
+.suggestion-action {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+}
+
+.suggestion-text {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 0 0 4px 0;
+  line-height: 1.5;
+}
+
+.suggestion-impact {
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 4px 0 0 0;
+}
+
+.more-suggestions {
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+  padding: 8px 0;
+  margin: 8px 0 0 0;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .smart-insights-container {
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .insights-section {
+    padding: 16px;
+  }
+
+  .insights-list {
+    grid-template-columns: 1fr;
+  }
+
+  .suggestion-item {
+    gap: 10px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+}
+
+/* Dark mode support */
+
+@media (prefers-color-scheme: dark) {
+  .smart-insights-container {
+    color: #f3f4f6;
+  }
+
+  .insights-section {
+    background: #1f2937;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .section-title {
+    color: #f3f4f6;
+  }
+
+  .anomaly-item {
+    background: linear-gradient(135deg, #7f1d1d 0%, #5f1f1f 100%);
+  }
+
+  .anomaly-category {
+    color: #f3f4f6;
+  }
+
+  .anomaly-message {
+    color: #d1d5db;
+  }
+
+  .detail-badge {
+    background: #991b1b;
+    color: #fecaca;
+  }
+
+  .detail-date {
+    color: #9ca3af;
+  }
+
+  .more-items {
+    color: #9ca3af;
+  }
+
+  .insight-card {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .insight-card:hover {
+    border-color: #60a5fa;
+  }
+
+  .insight-card.insight-highest-spending,
+  .insight-card.insight-spending-trend,
+  .insight-card.insight-top-merchants {
+    background: #374151;
+  }
+
+  .insight-title {
+    color: #f3f4f6;
+  }
+
+  .insight-message {
+    color: #d1d5db;
+  }
+
+  .suggestion-item {
+    background: #374151;
+  }
+
+  .suggestion-item.suggestion-high,
+  .suggestion-item.suggestion-medium,
+  .suggestion-item.suggestion-low {
+    background: #374151;
+  }
+
+  .suggestion-action {
+    color: #f3f4f6;
+  }
+
+  .suggestion-text {
+    color: #d1d5db;
+  }
+
+  .more-suggestions {
+    color: #9ca3af;
+  }
+}

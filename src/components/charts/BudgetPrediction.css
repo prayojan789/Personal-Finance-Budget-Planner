@@ -1,0 +1,339 @@
+/* Budget Predictions Component Styles */
+
+.budget-predictions {
+  padding: 24px 0;
+}
+
+.predictions-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16px;
+}
+
+.predictions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.prediction-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.prediction-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Status variants */
+
+.prediction-card.prediction-on-track {
+  border-left-color: #10b981;
+  background: linear-gradient(135deg, #f0fdf4 0%, #f9fafb 100%);
+}
+
+.prediction-card.prediction-at-risk {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, #fffbf0 0%, #f9fafb 100%);
+}
+
+.prediction-card.prediction-will-exceed {
+  border-left-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #f9fafb 100%);
+}
+
+/* Card header */
+
+.prediction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.prediction-category {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Status badge */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge.status-low {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.status-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.status-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Budget stats */
+
+.budget-stats {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.stat-value.text-warning {
+  color: #f59e0b;
+}
+
+/* Progress section */
+
+.progress-section {
+  margin-bottom: 12px;
+}
+
+.progress-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  position: relative;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.progress-info {
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.progress-fill.progress-success {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.progress-fill.progress-warning {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.progress-fill.progress-danger {
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.overflow-indicator {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 600;
+  color: #ef4444;
+  background: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Prediction message */
+
+.prediction-message {
+  background: rgba(255, 255, 255, 0.5);
+  border-left: 3px solid currentColor;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.prediction-card.prediction-will-exceed .prediction-message {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.prediction-card.prediction-at-risk .prediction-message {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.prediction-message p {
+  margin: 0;
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+/* Daily spending info */
+
+.daily-spending {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-item.warning .info-label {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .predictions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-card {
+    padding: 12px;
+  }
+
+  .daily-spending {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Dark mode support */
+
+@media (prefers-color-scheme: dark) {
+  .budget-predictions {
+    color: #f3f4f6;
+  }
+
+  .predictions-title {
+    color: #f3f4f6;
+  }
+
+  .prediction-card {
+    background: #1f2937;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .prediction-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .prediction-card.prediction-on-track {
+    background: linear-gradient(135deg, #064e3b 0%, #1f2937 100%);
+  }
+
+  .prediction-card.prediction-at-risk {
+    background: linear-gradient(135deg, #78350f 0%, #1f2937 100%);
+  }
+
+  .prediction-card.prediction-will-exceed {
+    background: linear-gradient(135deg, #7f1d1d 0%, #1f2937 100%);
+  }
+
+  .prediction-category {
+    color: #f3f4f6;
+  }
+
+  .stat-label {
+    color: #9ca3af;
+  }
+
+  .stat-value {
+    color: #f3f4f6;
+  }
+
+  .progress-bar {
+    background: #374151;
+  }
+
+  .progress-label {
+    color: #9ca3af;
+  }
+
+  .prediction-message {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .prediction-message p {
+    color: #f3f4f6;
+  }
+
+  .overflow-indicator {
+    background: #374151;
+    color: #fca5a5;
+  }
+
+  .info-label {
+    color: #9ca3af;
+  }
+
+  .info-value {
+    color: #f3f4f6;
+  }
+}

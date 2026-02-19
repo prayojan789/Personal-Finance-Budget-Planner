@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       console.log('Caching static assets');
       return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('Some assets failed to cache:', err);
+        console.warn(' Some assets failed to cache:', err);
         // Continue even if some assets fail
         return Promise.resolve();
       });
